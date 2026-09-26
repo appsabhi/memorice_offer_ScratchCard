@@ -48,11 +48,6 @@ const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
     // 2. Faint shapes (Hint of the prize underneath)
     ctx.save();
     ctx.globalAlpha = 0.06;
-    // Faint offer card outline
-    ctx.fillStyle = '#165F99';
-    ctx.beginPath();
-    ctx.roundRect(width * 0.1, height * 0.35, width * 0.8, height * 0.3, 20);
-    ctx.fill();
     // Faint scattered dots/decorations
     ctx.fillStyle = '#FF6B9E';
     ctx.beginPath(); ctx.arc(width * 0.8, height * 0.2, 15, 0, Math.PI * 2); ctx.fill();
@@ -92,11 +87,10 @@ const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
       ctx.fillText(text, width / 2, y);
     };
 
-    drawTextWithShadow('✨', height * 0.25, 32);
-    drawTextWithShadow('SCRATCH', height * 0.38, 30);
-    drawTextWithShadow('TO REVEAL', height * 0.5, 22, '600');
-    drawTextWithShadow('YOUR', height * 0.6, 22, '600');
-    drawTextWithShadow('SURPRISE', height * 0.72, 30);
+    drawTextWithShadow('✨', height * 0.28, 28);
+    drawTextWithShadow('SCRATCH', height * 0.45, 24);
+    drawTextWithShadow('TO UNLOCK', height * 0.58, 18, '600');
+    drawTextWithShadow('YOUR TREAT!', height * 0.71, 24);
   };
 
   const getPosition = (e, canvas) => {
@@ -163,7 +157,6 @@ const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
 
   return (
     <div className="scratch-card-container">
-      <div className="popsicle-stick"></div>
       
       <div className="scratch-card-wrapper" ref={containerRef}>
         <div className="prize-container">

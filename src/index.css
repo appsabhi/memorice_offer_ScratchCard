@@ -49,97 +49,40 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 20px;
   width: 100%;
 }
 
-@media (min-width: 768px) {
-  .campaign-layout {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 60px;
-  }
-}
-
-/* Campaign Info Card */
-.campaign-info-card {
+.campaign-top-wrapper {
+  width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 15px;
-  position: relative;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 28px;
-  padding: 30px 25px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
-  width: 100%;
+  margin-bottom: 10px;
+}
+
+.campaign-call-img-top {
+  width: 90%;
   max-width: 360px;
-  animation: fadeIn 1s ease-out;
-}
-
-.campaign-info-card h1 {
-  font-size: 2.2rem; color: var(--accent-yellow);
-  text-transform: uppercase; letter-spacing: 1px;
-  text-shadow: 0 4px 15px rgba(255, 230, 0, 0.3);
-  margin-bottom: 12px; font-weight: 700;
-  line-height: 1.1;
-}
-
-.campaign-info-card p {
-  font-size: 1.15rem; color: var(--text-light); font-weight: 500;
-  line-height: 1.4;
-}
-
-.info-decorations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-.info-dec-star { position: absolute; font-size: 1.2rem; top: -10px; right: 20px; animation: pulseBtn 3s infinite; }
-.info-dec-dot.pink { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-pink); bottom: 20px; right: 20px; animation: floatPopsicle 4s infinite; }
-.info-dec-dot.cyan { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--light-blue); top: 30px; left: -10px; animation: floatPopsicle 3s infinite reverse; }
-
-
-.campaign-image-wrapper {
-  margin-top: 5px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.campaign-call-img {
-  width: 100%;
-  max-width: 250px;
-  max-height: 250px;
+  height: auto;
   object-fit: contain;
   border-radius: 16px;
-  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
   animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .scratch-card-container {
-  width: 100%; max-width: 300px; aspect-ratio: 1 / 1.6;
+  width: 100%; max-width: 320px; aspect-ratio: 1 / 1.35;
   position: relative; margin: 0 auto 50px;
-  border-radius: 140px 140px 40px 40px;
+  border-radius: 36px;
   box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 8px white, inset 0 20px 40px rgba(255,255,255,0.9), inset 0 -10px 20px rgba(0,0,0,0.05);
   background: white;
   display: flex; justify-content: center; align-items: center;
-  animation: floatPopsicle 6s ease-in-out infinite;
-}
-
-.popsicle-stick {
-  position: absolute; bottom: -45px; left: 50%; transform: translateX(-50%);
-  width: 45px; height: 60px;
-  background: linear-gradient(to right, #D4A373, #E8C396, #D4A373);
-  border-radius: 0 0 22px 22px; z-index: 0;
-  box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.2);
+  animation: floatCard 6s ease-in-out infinite;
 }
 
 .scratch-card-wrapper {
   position: relative; width: calc(100% - 16px); height: calc(100% - 16px);
-  border-radius: 132px 132px 32px 32px; overflow: hidden; z-index: 1;
+  border-radius: 28px; overflow: hidden; z-index: 1;
   background: radial-gradient(circle at top right, #ffffff, #f0f4f8);
 }
 
@@ -151,27 +94,27 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
 
 .prize-decorations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 .dec-dot { position: absolute; border-radius: 50%; }
-.dec-dot.pink { width: 12px; height: 12px; background: var(--accent-pink); top: 15%; right: 15%; animation: floatPopsicle 3s infinite; }
-.dec-dot.cyan { width: 16px; height: 16px; background: var(--light-blue); bottom: 25%; left: 15%; animation: floatPopsicle 4s infinite reverse; }
+.dec-dot.pink { width: 12px; height: 12px; background: var(--accent-pink); top: 15%; right: 15%; animation: floatCard 3s infinite; }
+.dec-dot.cyan { width: 16px; height: 16px; background: var(--light-blue); bottom: 25%; left: 15%; animation: floatCard 4s infinite reverse; }
 .dec-star { position: absolute; font-size: 1.2rem; top: 20%; left: 15%; animation: pulseBtn 3s infinite; }
 
-.prize-icon, .prize-title, .winning-offer, .yum-btn { position: relative; z-index: 1; }
-
-.prize-icon { font-size: 3.5rem; margin-bottom: 5px; animation: bounce 2s infinite; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+.prize-icon { font-size: 3.5rem; margin-bottom: 5px; animation: bounce 2s infinite; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); position: relative; }
 
 .prize-title { color: var(--primary-blue); font-size: 1.8rem; margin-bottom: 15px; font-weight: 700; }
 
 .winning-offer {
-  background: linear-gradient(135deg, var(--light-blue), #23a6d5);
-  color: white; padding: 16px 20px; border-radius: 20px;
+  position: relative;
+  /* background: linear-gradient(135deg, var(--light-blue), #23a6d5); */
+  color: #23a6d5; padding: 16px 20px; border-radius: 20px;
   font-size: 1.25rem; font-weight: 700; line-height: 1.3;
   margin-bottom: 25px; width: 100%;
-  box-shadow: 0 10px 20px rgba(76, 199, 236, 0.4), inset 0 2px 5px rgba(255,255,255,0.5);
-  border: 2px solid rgba(255,255,255,0.8);
+  /* box-shadow: 0 10px 20px rgba(76, 199, 236, 0.4), inset 0 2px 5px rgba(255,255,255,0.5); */
+  /* border: 2px solid rgba(255,255,255,0.8); */
   animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .yum-btn {
+  position: relative;
   width: 100%; padding: 16px;
   background: var(--accent-yellow); color: var(--primary-blue-dark);
   border: none; border-radius: 100px;
@@ -188,7 +131,7 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
 
 .scratch-canvas {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  cursor: crosshair; touch-action: none;
+  cursor: crosshair; touch-action: none; z-index: 10;
 }
 
 .scratch-indicator {
@@ -201,7 +144,7 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
 
 @keyframes slideDown { 0% { transform: translateY(-30px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
-@keyframes floatPopsicle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes floatCard { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 70% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes swipeHand { 
@@ -273,4 +216,11 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
   15% { transform: translate(calc(var(--tx) * 0.2), calc(var(--ty) * 0.8)) rotate(-180deg) scale(1.2); opacity: 1; }
   80% { opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)) rotate(-720deg) scale(1); opacity: 0; }
+}
+
+.main-sec{
+width: 100%;
+display: flex;
+justify-content: center;
+
 }

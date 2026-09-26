@@ -21,6 +21,7 @@ const campaignConfig = {
 function App() {
   const [selectedOffer] = useState(() => campaignConfig.offers[Math.floor(Math.random() * campaignConfig.offers.length)]);
   const [isScratched, setIsScratched] = useState(false);
+  const [showPopper, setShowPopper] = useState(false);
   const [isClaimed, setIsClaimed] = useState(false);
   const [showClaimForm, setShowClaimForm] = useState(false);
 
@@ -80,32 +81,26 @@ function App() {
           <img src={memoiceLogo} alt="Memorice Cream" className="logo" />
         </header>
 
-        <main style={{ width: '100%' }}>
+        <main className='main-sec'>
           {!showClaimForm && !isClaimed && (
             <div className="campaign-layout">
-              <div className="campaign-info-card">
-                <div className="info-decorations">
-                  <div className="info-dec-star yellow">✨</div>
-                  <div className="info-dec-dot pink"></div>
-                  <div className="info-dec-dot cyan"></div>
-                </div>
-                <h1>{campaignConfig.campaignTitle}</h1>
-                <p>{campaignConfig.campaignSubtitle}</p>
-                
-                <div className="campaign-image-wrapper">
-                  <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img" />
-                </div>
+              <div className="campaign-top-wrapper">
+                <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img-top" />
               </div>
 
               <ScratchCard 
-                onReveal={() => setIsScratched(true)} 
+                onReveal={() => {
+                  setIsScratched(true);
+                  setShowPopper(true);
+                  setTimeout(() => setShowPopper(false), 3000);
+                }} 
                 onClaimClick={() => setShowClaimForm(true)} 
                 offer={selectedOffer} 
               />
             </div>
           )}
 
-          {isScratched && !showClaimForm && !isClaimed && (
+          {showPopper && !showClaimForm && !isClaimed && (
             <Popper />
           )}
 
