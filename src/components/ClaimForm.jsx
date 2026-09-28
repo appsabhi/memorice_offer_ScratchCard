@@ -110,7 +110,7 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
         </div>
 
         <button type="submit" className="submit-btn" disabled={isSubmitting} style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
-          {isSubmitting ? 'CLAIMING...' : 'CLAIM MY TREAT!'}
+          {isSubmitting ? 'CLAIMING...' : 'CLAIM YOUR OFFER!'}
         </button>
       </form>
     </div>

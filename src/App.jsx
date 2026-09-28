@@ -263,7 +263,7 @@ function App() {
             <div className="success-state">
               <div className="success-icon bounce" style={{ fontSize: '4rem' }}>🍦</div>
               <h2>ALREADY CLAIMED</h2>
-              <p className="subtitle" style={{ fontSize: '1.1rem' }}>Looks like you've already claimed your Memorice treat.</p>
+              <p className="subtitle" style={{ fontSize: '1.1rem' }}>Looks like you've already claimed your Memorice offer.</p>
             </div>
           )}
         </main>
