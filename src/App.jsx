@@ -14,12 +14,12 @@ const campaignConfig = {
   campaignTitle: "SCRATCH & WIN!",
   campaignSubtitle: "Scratch the popsicle and reveal your surprise!",
   offers: [
-    "FREE CANDY",
-    "FREE ₹20 WORTH ICE CREAM",
-    "FREE ₹30 WORTH ICE CREAM",
-    "FREE ₹40 WORTH ICE CREAM",
-    "FREE ₹100 WORTH ICE CREAM",
-    "FREE ₹500 WORTH ICE CREAM"
+    "YOU GOT A FREE ICE CANDY",
+    "FREE ICE for ₹20 ",
+    "FREE ICE for ₹30 ",
+    "FREE ICE for ₹40 ",
+    "FREE ICE for ₹100 ",
+    "FREE ICE for ₹500 "
   ]
 };
 
@@ -60,6 +60,53 @@ const formatTime = (ms) => {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
+// Popper effect when scratched (Premium Celebration)
+const Popper = React.memo(() => {
+  return (
+    <div className="popper-container">
+      {[...Array(60)].map((_, i) => {
+        const side = Math.random() > 0.5 ? 'left' : 'right';
+        const shape = Math.random() > 0.7 ? 'star' : (Math.random() > 0.3 ? 'circle' : 'square');
+        const style = {
+          left: side === 'left' ? '-5vw' : '105vw',
+          bottom: '15vh',
+          animation: `pop${side === 'left' ? 'Right' : 'Left'} 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards`,
+          backgroundColor: ['#165F99', '#4CC7EC', '#FFE600', '#FF6B9E', '#FFFFFF'][Math.floor(Math.random() * 5)],
+          '--tx': `${(Math.random() * 60 + 20) * (side === 'left' ? 1 : -1)}vw`,
+          '--ty': `-${Math.random() * 90 + 10}vh`,
+          animationDelay: `${Math.random() * 0.15}s`,
+          transform: `scale(${0.5 + Math.random()})`
+        };
+        return <div key={i} className={`popper-piece ${shape}`} style={style} />;
+      })}
+    </div>
+  );
+});
+
+// Fun animated popsicles for the background
+const FallingPopsicles = React.memo(() => {
+  return (
+    <div className="sprinkles-container">
+      {[...Array(15)].map((_, i) => {
+        const style = {
+          left: `${Math.random() * 100}vw`,
+          animationDuration: `${12 + Math.random() * 18}s`,
+          animationDelay: `-${Math.random() * 15}s`,
+          transform: `rotate(${Math.random() * 60 - 30}deg) scale(${0.5 + Math.random() * 1})`
+        };
+        const color = ['#FFB6C1', '#4CC7EC', '#FFE600', '#FF9999'][Math.floor(Math.random() * 4)];
+        
+        return (
+          <div key={i} className="falling-popsicle" style={style}>
+            <div className="popsicle-top" style={{ backgroundColor: color }}></div>
+            <div className="popsicle-bottom"></div>
+          </div>
+        );
+      })}
+    </div>
+  );
+});
+
 function App() {
   const [session, setSession] = useState(getInitialSession);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -98,52 +145,7 @@ function App() {
     }
   }, [session.sessionExpiresAt, session.status]);
 
-  // Popper effect when scratched (Premium Celebration)
-  const Popper = () => {
-    return (
-      <div className="popper-container">
-        {[...Array(60)].map((_, i) => {
-          const side = Math.random() > 0.5 ? 'left' : 'right';
-          const shape = Math.random() > 0.7 ? 'star' : (Math.random() > 0.3 ? 'circle' : 'square');
-          const style = {
-            left: side === 'left' ? '-5vw' : '105vw',
-            bottom: '15vh',
-            animation: `pop${side === 'left' ? 'Right' : 'Left'} 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards`,
-            backgroundColor: ['#165F99', '#4CC7EC', '#FFE600', '#FF6B9E', '#FFFFFF'][Math.floor(Math.random() * 5)],
-            '--tx': `${(Math.random() * 60 + 20) * (side === 'left' ? 1 : -1)}vw`,
-            '--ty': `-${Math.random() * 90 + 10}vh`,
-            animationDelay: `${Math.random() * 0.15}s`,
-            transform: `scale(${0.5 + Math.random()})`
-          };
-          return <div key={i} className={`popper-piece ${shape}`} style={style} />;
-        })}
-      </div>
-    );
-  };
-
-  // Fun animated popsicles for the background
-  const FallingPopsicles = () => {
-    return (
-      <div className="sprinkles-container">
-        {[...Array(15)].map((_, i) => {
-          const style = {
-            left: `${Math.random() * 100}vw`,
-            animationDuration: `${12 + Math.random() * 18}s`,
-            animationDelay: `-${Math.random() * 15}s`,
-            transform: `rotate(${Math.random() * 60 - 30}deg) scale(${0.5 + Math.random() * 1})`
-          };
-          const color = ['#FFB6C1', '#4CC7EC', '#FFE600', '#FF9999'][Math.floor(Math.random() * 4)];
-          
-          return (
-            <div key={i} className="falling-popsicle" style={style}>
-              <div className="popsicle-top" style={{ backgroundColor: color }}></div>
-              <div className="popsicle-bottom"></div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+  // (Popper and FallingPopsicles moved outside App)
 
   return (
     <>
@@ -157,12 +159,12 @@ function App() {
         {/* Timer UI - Only show during active sessions or winning offer/claim form */}
         {['ACTIVE_SESSION', 'WINNING_OFFER', 'CLAIM_FORM'].includes(session.status) && (
           <div className="timer-ui" style={{
-            position: 'absolute', top: '30px', right: '20px', 
+            position: 'fixed', bottom: '30px', left: '50%', transform: 'translateX(-50%)',
             background: 'rgba(255,255,255,0.15)', padding: '6px 14px', 
             borderRadius: '20px', backdropFilter: 'blur(10px)', 
             fontSize: '1.2rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.3)',
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: timeLeft < 60000 ? '#FF6B9E' : '#FFFFFF',
-            transition: 'color 0.3s ease'
+            transition: 'color 0.3s ease', zIndex: 1000
           }}>
             ⏱️ {formatTime(timeLeft)}
           </div>
