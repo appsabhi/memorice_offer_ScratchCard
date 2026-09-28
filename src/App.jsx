@@ -210,7 +210,7 @@ function App() {
               
               <div className="success-icon bounce">🎉</div>
               <h2>YAY! YOU GOT IT!</h2>
-              <p className="subtitle">Your Memorice treat is on its way!</p>
+              {/* <p className="subtitle">Your Memorice treat is on its way!</p> */}
               
               <div className="success-reward-card">
                 <span className="reward-label">🍦 YOUR REWARD</span>
@@ -233,12 +233,12 @@ function App() {
                 📸 FOLLOW OUR INSTAGRAM
               </a>
 
-              <p className="next-steps-text" style={{ 
+              {/* <p className="next-steps-text" style={{ 
                 fontSize: '1.1rem', color: '#64748b', lineHeight: '1.5', 
                 marginBottom: '25px', padding: '0 10px', fontWeight: '500'
               }}>
                 Take a screenshot of your reward to claim your offer! 🍦
-              </p>
+              </p> */}
 
             </div>
           )}
