@@ -76,7 +76,7 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
             required
             disabled={isSubmitting}
           />
-          <label htmlFor="name" className="form-label">Full Name</label>
+          <label htmlFor="name" className="form-label">Full Name <span style={{ color: '#ef4444' }}>*</span></label>
         </div>
 
         <div className="form-group">
@@ -91,7 +91,7 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
             required
             disabled={isSubmitting}
           />
-          <label htmlFor="mobile" className="form-label">Mobile Number</label>
+          <label htmlFor="mobile" className="form-label">Mobile Number <span style={{ color: '#ef4444' }}>*</span></label>
         </div>
 
         <div className="form-group">
@@ -106,7 +106,7 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
             required
             disabled={isSubmitting}
           />
-          <label htmlFor="bill" className="form-label">Bill No.</label>
+          <label htmlFor="bill" className="form-label">Bill No. <span style={{ color: '#ef4444' }}>*</span></label>
         </div>
 
         <button type="submit" className="submit-btn" disabled={isSubmitting} style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>

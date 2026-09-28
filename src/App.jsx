@@ -152,19 +152,24 @@ function App() {
       <div className="bg-decorations" />
       
       <div className="app-container">
-        <header className="header">
+        <header className="header" style={{ paddingBottom: '15px' }}>
           <img src={memoiceLogo} alt="Memorice Cream" className="logo" />
         </header>
+
+        <div className="campaign-top-wrapper" style={{ marginBottom: '25px' }}>
+          <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img-top" />
+        </div>
 
         {/* Timer UI - Only show during active sessions or claim form */}
         {['ACTIVE_SESSION', 'CLAIM_FORM'].includes(session.status) && (
           <div className="timer-ui" style={{
-            position: 'fixed', bottom: '30px', left: '50%', transform: 'translateX(-50%)',
-            background: 'rgba(255,255,255,0.15)', padding: '6px 14px', 
-            borderRadius: '20px', backdropFilter: 'blur(10px)', 
-            fontSize: '1.2rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.3)',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: timeLeft < 60000 ? '#FF6B9E' : '#FFFFFF',
-            transition: 'color 0.3s ease', zIndex: 1000
+            position: 'fixed', bottom: '30px', left: '20px', 
+            background: 'rgba(255,255,255,0.25)', padding: '8px 16px', 
+            borderRadius: '12px', backdropFilter: 'blur(10px)', 
+            fontSize: '1.3rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.4)',
+            boxShadow: '0 6px 12px rgba(0,0,0,0.2)', color: timeLeft < 60000 ? '#FF6B9E' : '#FFFFFF',
+            transition: 'all 0.3s ease', zIndex: 1000,
+            display: 'flex', alignItems: 'center', gap: '8px'
           }}>
             ⏱️ {formatTime(timeLeft)}
           </div>
@@ -181,9 +186,6 @@ function App() {
 
           {session.status === 'ACTIVE_SESSION' && (
             <div className="campaign-layout">
-              <div className="campaign-top-wrapper">
-                <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img-top" />
-              </div>
 
               <ScratchCard 
                 onReveal={() => {
