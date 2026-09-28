@@ -1,18 +1,50 @@
 import React, { useState } from 'react';
 
-const ClaimForm = ({ onClaim }) => {
+const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     email: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.name && formData.mobile) {
-      // Logic to submit form data can go here
-      // Example: POST to /api/claims (Vercel/Neon)
-      onClaim();
+    if (!formData.name || !formData.mobile) return;
+    
+    setIsSubmitting(true);
+    setErrorMsg('');
+
+    try {
+      const response = await fetch('/api/claims', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formData.name,
+          mobileNumber: formData.mobile,
+          email: formData.email,
+          offer: offer,
+          claimDateTime: new Date().toISOString()
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        onClaim();
+      } else {
+        if (data.error === 'ALREADY_CLAIMED' || response.status === 409) {
+          onAlreadyClaimed();
+        } else {
+          setErrorMsg('Something went wrong. Please try again.');
+          setIsSubmitting(false);
+        }
+      }
+    } catch (error) {
+      console.error("Claim submission error:", error);
+      setErrorMsg('Something went wrong. Please try again.');
+      setIsSubmitting(false);
     }
   };
 
@@ -24,6 +56,13 @@ const ClaimForm = ({ onClaim }) => {
     <div className="claim-section">
       <h2>Claim Your Reward</h2>
       <p className="subtitle">Almost there! 🍦</p>
+      
+      {errorMsg && (
+        <div style={{ color: '#ef4444', background: '#fef2f2', padding: '10px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.95rem', fontWeight: 'bold', border: '1px solid #fecaca' }}>
+          {errorMsg}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <input
@@ -35,6 +74,7 @@ const ClaimForm = ({ onClaim }) => {
             value={formData.name}
             onChange={handleChange}
             required
+            disabled={isSubmitting}
           />
           <label htmlFor="name" className="form-label">Full Name</label>
         </div>
@@ -49,6 +89,7 @@ const ClaimForm = ({ onClaim }) => {
             value={formData.mobile}
             onChange={handleChange}
             required
+            disabled={isSubmitting}
           />
           <label htmlFor="mobile" className="form-label">Mobile Number</label>
         </div>
@@ -62,11 +103,14 @@ const ClaimForm = ({ onClaim }) => {
             placeholder=" "
             value={formData.email}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
           <label htmlFor="email" className="form-label">Email (Optional)</label>
         </div>
 
-        <button type="submit" className="submit-btn">CLAIM MY TREAT!</button>
+        <button type="submit" className="submit-btn" disabled={isSubmitting} style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
+          {isSubmitting ? 'CLAIMING...' : 'CLAIM MY TREAT!'}
+        </button>
       </form>
     </div>
   );

@@ -3,11 +3,11 @@ import React, { useRef, useEffect, useState } from 'react';
 import memoiceLogo from '../assets/png/memoice_logo.png';
 import campaignCallImg from '../assets/png/memorice_hilite_campaign_call.png';
 
-const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
+const ScratchCard = ({ onReveal, onClaimClick, offer, initialRevealed }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(initialRevealed || false);
   const [hasStartedScratching, setHasStartedScratching] = useState(false);
 
   // Configuration for the scratch off layer
@@ -15,7 +15,10 @@ const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
   const revealThreshold = 40; // Percentage to reveal before auto-reveal
 
   useEffect(() => {
+    if (initialRevealed) return; // Don't setup canvas if already revealed
+    
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     
     // Set proper canvas size based on container
@@ -34,7 +37,7 @@ const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
     window.addEventListener('resize', resizeCanvas);
     
     return () => window.removeEventListener('resize', resizeCanvas);
-  }, []);
+  }, [initialRevealed]);
 
   const drawCover = (ctx, width, height) => {
     // 1. Premium silver pearl base coating
@@ -173,7 +176,7 @@ const ScratchCard = ({ onReveal, onClaimClick, offer }) => {
           {revealed && (
             <button 
               onClick={onClaimClick} 
-              className="submit-btn yum-btn" 
+              className="yum-btn" 
               style={{ fontSize: '1.1rem', padding: '12px 20px', width: '90%' }}
             >
               🍦 YUM! LET'S GO!

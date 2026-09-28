@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ScratchCard from './components/ScratchCard';
 import ClaimForm from './components/ClaimForm';
 import './index.css';
 
 import memoiceLogo from './assets/png/memoice_logo.png';
 import campaignCallImg from './assets/png/memorice_hilite_campaign_call.png';
+
+const SESSION_DURATION_MINUTES = 5;
+const SESSION_KEY = 'memorice_campaign_session';
+const INSTAGRAM_URL = "https://www.instagram.com/memoricecream/";
+
 const campaignConfig = {
   campaignTitle: "SCRATCH & WIN!",
   campaignSubtitle: "Scratch the popsicle and reveal your surprise!",
@@ -18,12 +23,80 @@ const campaignConfig = {
   ]
 };
 
+const getInitialSession = () => {
+  const stored = localStorage.getItem(SESSION_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      // If time has passed the expiration and it's not a completed state
+      if (Date.now() >= parsed.sessionExpiresAt && !['REWARD_CLAIMED', 'ALREADY_CLAIMED', 'TIME_EXPIRED'].includes(parsed.status)) {
+        parsed.status = 'TIME_EXPIRED';
+        localStorage.setItem(SESSION_KEY, JSON.stringify(parsed));
+      }
+      return parsed;
+    } catch (e) {
+      console.error("Failed to parse session", e);
+    }
+  }
+  const sessionStartedAt = Date.now();
+  const sessionExpiresAt = sessionStartedAt + SESSION_DURATION_MINUTES * 60 * 1000;
+  const newSession = {
+    sessionId: Math.random().toString(36).substring(2, 15),
+    status: 'ACTIVE_SESSION', 
+    selectedOffer: campaignConfig.offers[Math.floor(Math.random() * campaignConfig.offers.length)],
+    scratchCompleted: false,
+    sessionStartedAt,
+    sessionExpiresAt,
+  };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+  return newSession;
+};
+
+const formatTime = (ms) => {
+  if (ms <= 0) return '00:00';
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
+
 function App() {
-  const [selectedOffer] = useState(() => campaignConfig.offers[Math.floor(Math.random() * campaignConfig.offers.length)]);
-  const [isScratched, setIsScratched] = useState(false);
+  const [session, setSession] = useState(getInitialSession);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [showPopper, setShowPopper] = useState(false);
-  const [isClaimed, setIsClaimed] = useState(false);
-  const [showClaimForm, setShowClaimForm] = useState(false);
+  const [showDevConfirm, setShowDevConfirm] = useState(false);
+
+  const updateSession = (updates) => {
+    setSession(prev => {
+      const next = { ...prev, ...updates };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = Date.now();
+      const remaining = session.sessionExpiresAt - now;
+      
+      if (remaining <= 0) {
+        setTimeLeft(0);
+        if (!['REWARD_CLAIMED', 'ALREADY_CLAIMED', 'TIME_EXPIRED'].includes(session.status)) {
+          updateSession({ status: 'TIME_EXPIRED' });
+        }
+      } else {
+        setTimeLeft(remaining);
+      }
+    };
+
+    updateTimer(); // Initial check
+    
+    // Only run interval if we're not in a terminal state
+    if (!['REWARD_CLAIMED', 'ALREADY_CLAIMED', 'TIME_EXPIRED'].includes(session.status)) {
+      const interval = setInterval(updateTimer, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [session.sessionExpiresAt, session.status]);
 
   // Popper effect when scratched (Premium Celebration)
   const Popper = () => {
@@ -81,8 +154,22 @@ function App() {
           <img src={memoiceLogo} alt="Memorice Cream" className="logo" />
         </header>
 
+        {/* Timer UI - Only show during active sessions or winning offer/claim form */}
+        {['ACTIVE_SESSION', 'WINNING_OFFER', 'CLAIM_FORM'].includes(session.status) && (
+          <div className="timer-ui" style={{
+            position: 'absolute', top: '30px', right: '20px', 
+            background: 'rgba(255,255,255,0.15)', padding: '6px 14px', 
+            borderRadius: '20px', backdropFilter: 'blur(10px)', 
+            fontSize: '1.2rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.3)',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: timeLeft < 60000 ? '#FF6B9E' : '#FFFFFF',
+            transition: 'color 0.3s ease'
+          }}>
+            ⏱️ {formatTime(timeLeft)}
+          </div>
+        )}
+
         <main className='main-sec'>
-          {!showClaimForm && !isClaimed && (
+          {(session.status === 'ACTIVE_SESSION' || session.status === 'WINNING_OFFER') && (
             <div className="campaign-layout">
               <div className="campaign-top-wrapper">
                 <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img-top" />
@@ -90,33 +177,139 @@ function App() {
 
               <ScratchCard 
                 onReveal={() => {
-                  setIsScratched(true);
+                  updateSession({ scratchCompleted: true, status: 'WINNING_OFFER' });
                   setShowPopper(true);
                   setTimeout(() => setShowPopper(false), 3000);
                 }} 
-                onClaimClick={() => setShowClaimForm(true)} 
-                offer={selectedOffer} 
+                onClaimClick={() => updateSession({ status: 'CLAIM_FORM' })} 
+                offer={session.selectedOffer}
+                initialRevealed={session.status === 'WINNING_OFFER' || session.scratchCompleted}
               />
             </div>
           )}
 
-          {showPopper && !showClaimForm && !isClaimed && (
+          {showPopper && (session.status === 'ACTIVE_SESSION' || session.status === 'WINNING_OFFER') && (
             <Popper />
           )}
 
-          {showClaimForm && !isClaimed && (
-            <ClaimForm onClaim={() => setIsClaimed(true)} />
+          {session.status === 'CLAIM_FORM' && (
+            <ClaimForm 
+              offer={session.selectedOffer}
+              onClaim={() => updateSession({ status: 'REWARD_CLAIMED' })} 
+              onAlreadyClaimed={() => updateSession({ status: 'ALREADY_CLAIMED' })}
+            />
           )}
 
-          {isClaimed && (
+          {session.status === 'REWARD_CLAIMED' && (
             <div className="success-state">
-              <div className="success-icon">🎉</div>
-              <h2>Reward Claimed!</h2>
-              <p>Your Memorice surprise is ready! Keep an eye on your phone/email.</p>
+              <div className="success-decorations">
+                <div className="dec-dot pink"></div>
+                <div className="dec-dot cyan"></div>
+                <div className="dec-star yellow">✨</div>
+              </div>
+              
+              <div className="success-icon bounce">🎉</div>
+              <h2>YAY! YOU GOT IT!</h2>
+              <p className="subtitle">Your Memorice treat is on its way!</p>
+              
+              <div className="success-reward-card">
+                <span className="reward-label">🍦 YOUR REWARD</span>
+                <div className="reward-offer">{session.selectedOffer}</div>
+              </div>
+
+              <a 
+                href={INSTAGRAM_URL} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ 
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                  color: 'white', textDecoration: 'none', padding: '14px 28px',
+                  borderRadius: '100px', fontWeight: '700', fontSize: '1.15rem',
+                  marginBottom: '16px', boxShadow: '0 6px 20px rgba(220, 39, 67, 0.3)',
+                  transition: 'transform 0.2s ease'
+                }}
+              >
+                📸 FOLLOW OUR INSTAGRAM
+              </a>
+
+              <p className="next-steps-text" style={{ 
+                fontSize: '1.1rem', color: '#64748b', lineHeight: '1.5', 
+                marginBottom: '25px', padding: '0 10px', fontWeight: '500'
+              }}>
+                Take a screenshot of your reward to claim your offer! 🍦
+              </p>
+
+            </div>
+          )}
+
+          {session.status === 'TIME_EXPIRED' && (
+            <div className="success-state">
+              <div className="success-icon bounce" style={{ filter: 'grayscale(100%)', opacity: 0.8 }}>⏰</div>
+              <h2 style={{ color: '#64748b' }}>TIME'S UP!</h2>
+              <p className="subtitle" style={{ marginBottom: '10px' }}>Your scratch session has ended.</p>
+              
+              <div className="success-reward-card" style={{ background: 'rgba(255,255,255,0.05)', borderColor: '#cbd5e1' }}>
+                <div className="reward-offer" style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
+                  Keep an eye out for our next campaign!
+                </div>
+              </div>
+            </div>
+          )}
+
+          {session.status === 'ALREADY_CLAIMED' && (
+            <div className="success-state">
+              <div className="success-icon bounce" style={{ fontSize: '4rem' }}>🍦</div>
+              <h2>ALREADY CLAIMED</h2>
+              <p className="subtitle" style={{ fontSize: '1.1rem' }}>Looks like you've already claimed your Memorice treat.</p>
             </div>
           )}
         </main>
       </div>
+
+      {/* DEVELOPMENT ONLY RESET BUTTON */}
+      {import.meta.env.DEV && (
+        <div style={{ position: 'fixed', bottom: '10px', right: '10px', zIndex: 9999 }}>
+          <button 
+            onClick={() => setShowDevConfirm(true)}
+            style={{
+              background: 'rgba(0, 0, 0, 0.6)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', 
+              padding: '6px 12px', borderRadius: '6px', fontSize: '12px', cursor: 'pointer',
+              fontFamily: 'monospace', fontWeight: 'bold'
+            }}
+          >
+            🔄 DEV RESET
+          </button>
+
+          {showDevConfirm && (
+            <div style={{
+              position: 'absolute', bottom: '35px', right: '0', background: '#ffffff', 
+              color: '#333333', padding: '15px', borderRadius: '8px', 
+              boxShadow: '0 10px 25px rgba(0,0,0,0.5)', width: '220px',
+              fontFamily: 'sans-serif'
+            }}>
+              <p style={{ margin: '0 0 15px 0', fontSize: '14px', fontWeight: 'bold', textAlign: 'center' }}>Reset this test session?</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
+                <button 
+                  onClick={() => setShowDevConfirm(false)}
+                  style={{ flex: 1, background: '#e2e8f0', color: '#475569', border: 'none', padding: '8px 0', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}
+                >
+                  CANCEL
+                </button>
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem(SESSION_KEY);
+                    window.location.reload();
+                  }}
+                  style={{ flex: 1, background: '#ef4444', color: '#ffffff', border: 'none', padding: '8px 0', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}
+                >
+                  RESET
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
