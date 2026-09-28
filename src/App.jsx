@@ -156,8 +156,8 @@ function App() {
           <img src={memoiceLogo} alt="Memorice Cream" className="logo" />
         </header>
 
-        {/* Timer UI - Only show during active sessions or winning offer/claim form */}
-        {['ACTIVE_SESSION', 'WINNING_OFFER', 'CLAIM_FORM'].includes(session.status) && (
+        {/* Timer UI - Only show during active sessions or claim form */}
+        {['ACTIVE_SESSION', 'CLAIM_FORM'].includes(session.status) && (
           <div className="timer-ui" style={{
             position: 'fixed', bottom: '30px', left: '50%', transform: 'translateX(-50%)',
             background: 'rgba(255,255,255,0.15)', padding: '6px 14px', 
@@ -179,7 +179,7 @@ function App() {
             />
           )}
 
-          {(session.status === 'ACTIVE_SESSION' || session.status === 'WINNING_OFFER') && (
+          {session.status === 'ACTIVE_SESSION' && (
             <div className="campaign-layout">
               <div className="campaign-top-wrapper">
                 <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img-top" />
@@ -187,18 +187,16 @@ function App() {
 
               <ScratchCard 
                 onReveal={() => {
-                  updateSession({ scratchCompleted: true, status: 'WINNING_OFFER' });
+                  updateSession({ scratchCompleted: true, status: 'REWARD_CLAIMED' });
                   setShowPopper(true);
                   setTimeout(() => setShowPopper(false), 3000);
                 }} 
-                onClaimClick={() => updateSession({ status: 'REWARD_CLAIMED' })} 
                 offer={session.selectedOffer}
-                initialRevealed={session.status === 'WINNING_OFFER' || session.scratchCompleted}
               />
             </div>
           )}
 
-          {showPopper && (session.status === 'ACTIVE_SESSION' || session.status === 'WINNING_OFFER') && (
+          {showPopper && (session.status === 'ACTIVE_SESSION' || session.status === 'REWARD_CLAIMED') && (
             <Popper />
           )}
 

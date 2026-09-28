@@ -3,11 +3,11 @@ import React, { useRef, useEffect, useState } from 'react';
 import memoiceLogo from '../assets/png/memoice_logo.png';
 import campaignCallImg from '../assets/png/memorice_hilite_campaign_call.png';
 
-const ScratchCard = ({ onReveal, onClaimClick, offer, initialRevealed }) => {
+const ScratchCard = ({ onReveal, offer }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [revealed, setRevealed] = useState(initialRevealed || false);
+  const [revealed, setRevealed] = useState(false);
   const [hasStartedScratching, setHasStartedScratching] = useState(false);
 
   // Configuration for the scratch off layer
@@ -15,8 +15,6 @@ const ScratchCard = ({ onReveal, onClaimClick, offer, initialRevealed }) => {
   const revealThreshold = 40; // Percentage to reveal before auto-reveal
 
   useEffect(() => {
-    if (initialRevealed) return; // Don't setup canvas if already revealed
-    
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -37,7 +35,7 @@ const ScratchCard = ({ onReveal, onClaimClick, offer, initialRevealed }) => {
     window.addEventListener('resize', resizeCanvas);
     
     return () => window.removeEventListener('resize', resizeCanvas);
-  }, [initialRevealed]);
+  }, []);
 
   const drawCover = (ctx, width, height) => {
     // 1. Premium silver pearl base coating
@@ -169,19 +167,13 @@ const ScratchCard = ({ onReveal, onClaimClick, offer, initialRevealed }) => {
             <div className="dec-star yellow">✨</div>
           </div>
           
-          <div className="prize-icon bounce" style={{ fontSize: '4rem', marginBottom: '5px' }}>🎉</div>
-          <h2 className="prize-title" style={{ fontSize: '1.8rem', marginBottom: '10px' }}>YOU WON!</h2>
-          <div className="winning-offer" style={{ fontSize: '1.15rem', padding: '16px', marginBottom: '20px' }}>{offer}</div>
+          <div className="success-icon bounce" style={{ fontSize: '4rem', marginBottom: '5px' }}>🎉</div>
+          <h2 style={{ color: 'var(--primary-blue)', fontSize: '1.8rem', marginBottom: '10px', fontWeight: '700' }}>YAY! YOU GOT IT!</h2>
           
-          {revealed && (
-            <button 
-              onClick={onClaimClick} 
-              className="yum-btn" 
-              style={{ fontSize: '1.1rem', padding: '12px 20px', width: '90%' }}
-            >
-              🍦 YUM! LET'S GO!
-            </button>
-          )}
+          <div className="success-reward-card" style={{ transform: 'scale(0.9)', transformOrigin: 'top center', marginBottom: '0' }}>
+            <span className="reward-label">🍦 YOUR REWARD</span>
+            <div className="reward-offer">{offer}</div>
+          </div>
         </div>
         
         {/* Scratch Canvas (Removed completely after reveal) */}
