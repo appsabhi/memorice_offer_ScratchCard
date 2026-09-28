@@ -10,20 +10,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { fullName, mobileNumber, email, offer, claimDateTime } = req.body || {};
+    const { fullName, mobileNumber, billNumber, offer, claimDateTime } = req.body || {};
 
     // Validate required fields
-    if (!fullName || !mobileNumber || !offer) {
+    if (!fullName || !mobileNumber || !billNumber || !offer) {
       return res.status(400).json({ success: false, error: 'INVALID_INPUT' });
     }
 
     const trimmedName = fullName.trim();
     const trimmedMobile = mobileNumber.trim();
+    const trimmedBill = billNumber.trim();
     const trimmedOffer = offer.trim();
-    const cleanEmail = email ? email.trim() : 'Not Provided';
     const cleanClaimDate = claimDateTime ? new Date(claimDateTime) : new Date();
 
-    if (!trimmedName || !trimmedMobile || !trimmedOffer) {
+    if (!trimmedName || !trimmedMobile || !trimmedBill || !trimmedOffer) {
       return res.status(400).json({ success: false, error: 'INVALID_INPUT' });
     }
 
@@ -44,9 +44,9 @@ export default async function handler(req, res) {
       // Insert new claim
       await client.query(
         `INSERT INTO public.claims 
-        (full_name, mobile_number, email, offer, claim_date_time, created_at) 
+        (full_name, mobile_number, bill_number, offer, claim_date_time, created_at) 
         VALUES ($1, $2, $3, $4, $5, NOW())`,
-        [trimmedName, trimmedMobile, cleanEmail, trimmedOffer, cleanClaimDate]
+        [trimmedName, trimmedMobile, trimmedBill, trimmedOffer, cleanClaimDate]
       );
       
       client.release();

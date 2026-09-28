@@ -4,14 +4,14 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
-    email: ''
+    bill: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.mobile) return;
+    if (!formData.name || !formData.mobile || !formData.bill) return;
     
     setIsSubmitting(true);
     setErrorMsg('');
@@ -23,7 +23,7 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
         body: JSON.stringify({
           fullName: formData.name,
           mobileNumber: formData.mobile,
-          email: formData.email,
+          billNumber: formData.bill,
           offer: offer,
           claimDateTime: new Date().toISOString()
         })
@@ -96,16 +96,17 @@ const ClaimForm = ({ offer, onClaim, onAlreadyClaimed }) => {
 
         <div className="form-group">
           <input
-            type="email"
-            id="email"
-            name="email"
+            type="text"
+            id="bill"
+            name="bill"
             className="form-input"
             placeholder=" "
-            value={formData.email}
+            value={formData.bill}
             onChange={handleChange}
+            required
             disabled={isSubmitting}
           />
-          <label htmlFor="email" className="form-label">Email (Optional)</label>
+          <label htmlFor="bill" className="form-label">Bill No.</label>
         </div>
 
         <button type="submit" className="submit-btn" disabled={isSubmitting} style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>

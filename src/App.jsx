@@ -42,7 +42,7 @@ const getInitialSession = () => {
   const sessionExpiresAt = sessionStartedAt + SESSION_DURATION_MINUTES * 60 * 1000;
   const newSession = {
     sessionId: Math.random().toString(36).substring(2, 15),
-    status: 'ACTIVE_SESSION', 
+    status: 'CLAIM_FORM', 
     selectedOffer: campaignConfig.offers[Math.floor(Math.random() * campaignConfig.offers.length)],
     scratchCompleted: false,
     sessionStartedAt,
@@ -171,6 +171,14 @@ function App() {
         )}
 
         <main className='main-sec'>
+          {session.status === 'CLAIM_FORM' && (
+            <ClaimForm 
+              offer={session.selectedOffer}
+              onClaim={() => updateSession({ status: 'ACTIVE_SESSION' })} 
+              onAlreadyClaimed={() => updateSession({ status: 'ALREADY_CLAIMED' })}
+            />
+          )}
+
           {(session.status === 'ACTIVE_SESSION' || session.status === 'WINNING_OFFER') && (
             <div className="campaign-layout">
               <div className="campaign-top-wrapper">
@@ -183,7 +191,7 @@ function App() {
                   setShowPopper(true);
                   setTimeout(() => setShowPopper(false), 3000);
                 }} 
-                onClaimClick={() => updateSession({ status: 'CLAIM_FORM' })} 
+                onClaimClick={() => updateSession({ status: 'REWARD_CLAIMED' })} 
                 offer={session.selectedOffer}
                 initialRevealed={session.status === 'WINNING_OFFER' || session.scratchCompleted}
               />
@@ -192,14 +200,6 @@ function App() {
 
           {showPopper && (session.status === 'ACTIVE_SESSION' || session.status === 'WINNING_OFFER') && (
             <Popper />
-          )}
-
-          {session.status === 'CLAIM_FORM' && (
-            <ClaimForm 
-              offer={session.selectedOffer}
-              onClaim={() => updateSession({ status: 'REWARD_CLAIMED' })} 
-              onAlreadyClaimed={() => updateSession({ status: 'ALREADY_CLAIMED' })}
-            />
           )}
 
           {session.status === 'REWARD_CLAIMED' && (
