@@ -38,43 +38,80 @@ const ScratchCard = ({ onReveal, offer }) => {
   }, []);
 
   const drawCover = (ctx, width, height) => {
-    // 1. Solid base color (Yellow)
-    ctx.fillStyle = '#FFC107'; 
+    // 1. Solid base color (Logo Blue)
+    ctx.fillStyle = '#165F99'; // --primary-blue
     ctx.fillRect(0, 0, width, height);
 
     // 2. Darker inner circle
     const centerX = width / 2;
     const centerY = height / 2;
-    const radius = Math.min(width, height) * 0.38;
+    const radius = Math.min(width, height) * 0.35;
     
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.fillStyle = '#E0A800'; 
+    ctx.fillStyle = '#0f446f'; // --primary-blue-dark
     ctx.fill();
 
-    // 3. Draw a flat vector popsicle in the center
+    // 3. Draw Gift Box (like the reference image)
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.rotate(45 * Math.PI / 180); // Rotate 45 degrees
+    ctx.rotate(-20 * Math.PI / 180); // Tilted left
 
-    // Draw simple popsicle stick
-    ctx.fillStyle = '#E69A59'; // Smooth sandy brown
-    ctx.beginPath();
-    if (ctx.roundRect) {
-      ctx.roundRect(-6, 15, 12, 28, 6);
-    } else {
-      ctx.rect(-6, 15, 12, 28);
-    }
-    ctx.fill();
+    // Apply drop shadow for the box
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 5;
+
+    // Box body (White)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(-22, -10, 44, 38);
     
-    // Draw minimal popsicle body (Solid Brand Blue)
-    ctx.fillStyle = '#4CC7EC'; 
+    // Disable shadow for inner elements
+    ctx.shadowColor = 'transparent';
+
+    // Ribbon vertical (Yellow)
+    ctx.fillStyle = '#FFC107'; 
+    ctx.fillRect(-5, -10, 10, 38);
+    
+    // Box lid shadow (small gray line under lid)
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    ctx.fillRect(-22, -10, 44, 4);
+    
+    // Re-enable shadow for the lid
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 3;
+
+    // Box lid (White)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(-26, -22, 52, 12);
+    
+    ctx.shadowColor = 'transparent';
+
+    // Ribbon on lid
+    ctx.fillStyle = '#FFC107'; 
+    ctx.fillRect(-5, -22, 10, 12);
+    
+    // Bow (Yellow)
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = '#FFC107';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    // Left loop
     ctx.beginPath();
-    if (ctx.roundRect) {
-      ctx.roundRect(-22, -35, 44, 60, 22);
-    } else {
-      ctx.rect(-22, -35, 44, 60);
-    }
+    ctx.ellipse(-10, -28, 9, 5, -15 * Math.PI / 180, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    // Right loop
+    ctx.beginPath();
+    ctx.ellipse(10, -28, 9, 5, 15 * Math.PI / 180, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    // Center knot
+    ctx.fillStyle = '#FFC107';
+    ctx.beginPath();
+    ctx.arc(0, -25, 4, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.restore();
