@@ -121,7 +121,7 @@ const ScratchCard = ({ onReveal, offer }) => {
     ctx.textBaseline = 'middle';
     ctx.font = '800 24px Fredoka, sans-serif';
 
-    const textLines = ['SCRATCH &', 'REVEAL'];
+    const textLines = ['SCRATCH &', 'WIN']
     const startY = height * 0.82; // Move to the bottom section
     
     textLines.forEach((line, index) => {
