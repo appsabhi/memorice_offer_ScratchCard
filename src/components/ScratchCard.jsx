@@ -128,7 +128,7 @@ const ScratchCard = ({ onReveal, offer }) => {
       const y = startY + (index * 26);
       
       // Main text color
-      ctx.fillStyle = '#f7e702ff'; 
+      ctx.fillStyle = '#23A2FF'; 
       ctx.fillText(line, centerX, y);
     });
   };
