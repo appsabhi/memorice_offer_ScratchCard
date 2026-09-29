@@ -38,60 +38,77 @@ const ScratchCard = ({ onReveal, offer }) => {
   }, []);
 
   const drawCover = (ctx, width, height) => {
-    // 1. Premium silver pearl base coating
+    // 1. Silver metallic foil base
     const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, '#f8f9fa');
-    gradient.addColorStop(0.5, '#e9ecef');
-    gradient.addColorStop(1, '#dee2e6');
+    gradient.addColorStop(0, '#e2e8f0');
+    gradient.addColorStop(0.3, '#cbd5e1');
+    gradient.addColorStop(0.5, '#94a3b8');
+    gradient.addColorStop(0.7, '#cbd5e1');
+    gradient.addColorStop(1, '#64748b');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
     
-    // 2. Faint shapes (Hint of the prize underneath)
+    // 2. Diagonal foil pattern (watermark/stripes)
     ctx.save();
-    ctx.globalAlpha = 0.06;
-    // Faint scattered dots/decorations
-    ctx.fillStyle = '#FF6B9E';
-    ctx.beginPath(); ctx.arc(width * 0.8, height * 0.2, 15, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#FFE600';
-    ctx.beginPath(); ctx.arc(width * 0.2, height * 0.8, 20, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#4CC7EC';
-    ctx.beginPath(); ctx.arc(width * 0.85, height * 0.85, 10, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-
-    // 3. Premium subtle grain/noise for realism
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-    for(let i=0; i<1500; i++) {
-      ctx.fillRect(Math.random() * width, Math.random() * height, 1.2, 1.2);
-    }
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-    for(let i=0; i<1500; i++) {
-      ctx.fillRect(Math.random() * width, Math.random() * height, 1.2, 1.2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    for (let i = -width; i < width * 2; i += 25) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i + height, height);
+      ctx.stroke();
     }
     
-    // 4. Premium instruction text (Engraved effect)
+    // Cross diagonal
+    ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+    for (let i = -width; i < width * 2; i += 25) {
+      ctx.beginPath();
+      ctx.moveTo(i, height);
+      ctx.lineTo(i + height, 0);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // 3. Dense noise for foil texture
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    for(let i=0; i<4000; i++) {
+      ctx.fillRect(Math.random() * width, Math.random() * height, 1.2, 1.2);
+    }
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    for(let i=0; i<4000; i++) {
+      ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
+    }
+
+    // 4. Scratch Area Border (Dashed)
+    ctx.strokeStyle = 'rgba(71, 85, 105, 0.7)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([8, 8]);
+    ctx.strokeRect(15, 15, width - 30, height - 30);
+    ctx.setLineDash([]); // Reset
+    
+    // 5. Instruction text
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
-    const drawTextWithShadow = (text, y, fontSize, fontWeight = '800') => {
+    const drawText = (text, y, fontSize, fontWeight = '800', isAccent = false) => {
       ctx.font = `${fontWeight} ${fontSize}px Outfit, sans-serif`;
       
-      // Bottom highlight
-      ctx.fillStyle = 'rgba(255,255,255, 0.9)'; 
-      ctx.fillText(text, width / 2, y + 1.5);
+      // Foil shadow effect
+      ctx.fillStyle = 'rgba(255,255,255, 0.8)';
+      ctx.fillText(text, width / 2 + 1.5, y + 1.5);
       
-      // Top inner shadow
-      ctx.fillStyle = 'rgba(15, 68, 111, 0.25)'; 
-      ctx.fillText(text, width / 2, y - 1);
+      ctx.fillStyle = 'rgba(0,0,0, 0.5)';
+      ctx.fillText(text, width / 2 - 1, y - 1);
       
-      // Main text color (slate/silver)
-      ctx.fillStyle = '#64748b'; 
+      // Main color
+      ctx.fillStyle = isAccent ? '#1e293b' : '#334155';
       ctx.fillText(text, width / 2, y);
     };
 
-    drawTextWithShadow('✨', height * 0.28, 28);
-    drawTextWithShadow('SCRATCH', height * 0.45, 24);
-    drawTextWithShadow('TO UNLOCK', height * 0.58, 18, '600');
-    drawTextWithShadow('YOUR TREAT!', height * 0.71, 24);
+    drawText('✨', height * 0.28, 36);
+    drawText('SCRATCH HERE', height * 0.45, 30, '900', true);
+    drawText('TO REVEAL', height * 0.58, 20, '700');
+    drawText('YOUR SURPRISE', height * 0.70, 20, '700');
   };
 
   const getPosition = (e, canvas) => {

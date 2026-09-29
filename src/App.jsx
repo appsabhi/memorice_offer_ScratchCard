@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ScratchCard from './components/ScratchCard';
 import ClaimForm from './components/ClaimForm';
 import './index.css';
@@ -6,7 +6,6 @@ import './index.css';
 import memoiceLogo from './assets/png/memoice_logo.png';
 import campaignCallImg from './assets/png/memorice_hilite_campaign_call.png';
 
-const SESSION_DURATION_MINUTES = 5;
 const SESSION_KEY = 'memorice_campaign_session';
 const INSTAGRAM_URL = "https://www.instagram.com/memoricecream/";
 
@@ -28,36 +27,21 @@ const getInitialSession = () => {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      // If time has passed the expiration and it's not a completed state
-      if (Date.now() >= parsed.sessionExpiresAt && !['REWARD_CLAIMED', 'ALREADY_CLAIMED', 'TIME_EXPIRED'].includes(parsed.status)) {
-        parsed.status = 'TIME_EXPIRED';
-        localStorage.setItem(SESSION_KEY, JSON.stringify(parsed));
-      }
       return parsed;
     } catch (e) {
       console.error("Failed to parse session", e);
     }
   }
   const sessionStartedAt = Date.now();
-  const sessionExpiresAt = sessionStartedAt + SESSION_DURATION_MINUTES * 60 * 1000;
   const newSession = {
     sessionId: Math.random().toString(36).substring(2, 15),
     status: 'CLAIM_FORM', 
     selectedOffer: campaignConfig.offers[Math.floor(Math.random() * campaignConfig.offers.length)],
     scratchCompleted: false,
     sessionStartedAt,
-    sessionExpiresAt,
   };
   localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
   return newSession;
-};
-
-const formatTime = (ms) => {
-  if (ms <= 0) return '00:00';
-  const totalSeconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
 // Popper effect when scratched (Premium Celebration)
@@ -109,7 +93,6 @@ const FallingPopsicles = React.memo(() => {
 
 function App() {
   const [session, setSession] = useState(getInitialSession);
-  const [timeLeft, setTimeLeft] = useState(0);
   const [showPopper, setShowPopper] = useState(false);
   const [showDevConfirm, setShowDevConfirm] = useState(false);
 
@@ -120,30 +103,6 @@ function App() {
       return next;
     });
   };
-
-  useEffect(() => {
-    const updateTimer = () => {
-      const now = Date.now();
-      const remaining = session.sessionExpiresAt - now;
-      
-      if (remaining <= 0) {
-        setTimeLeft(0);
-        if (!['REWARD_CLAIMED', 'ALREADY_CLAIMED', 'TIME_EXPIRED'].includes(session.status)) {
-          updateSession({ status: 'TIME_EXPIRED' });
-        }
-      } else {
-        setTimeLeft(remaining);
-      }
-    };
-
-    updateTimer(); // Initial check
-    
-    // Only run interval if we're not in a terminal state
-    if (!['REWARD_CLAIMED', 'ALREADY_CLAIMED', 'TIME_EXPIRED'].includes(session.status)) {
-      const interval = setInterval(updateTimer, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [session.sessionExpiresAt, session.status]);
 
   // (Popper and FallingPopsicles moved outside App)
 
@@ -159,21 +118,6 @@ function App() {
         <div className="campaign-top-wrapper" style={{ marginBottom: '25px' }}>
           <img src={campaignCallImg} alt="Campaign Offer" className="campaign-call-img-top" />
         </div>
-
-        {/* Timer UI - Only show during active sessions or claim form */}
-        {['ACTIVE_SESSION', 'CLAIM_FORM'].includes(session.status) && (
-          <div className="timer-ui" style={{
-            position: 'fixed', bottom: '30px', left: '20px', 
-            background: 'rgba(255,255,255,0.25)', padding: '8px 16px', 
-            borderRadius: '12px', backdropFilter: 'blur(10px)', 
-            fontSize: '1.3rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.4)',
-            boxShadow: '0 6px 12px rgba(0,0,0,0.2)', color: timeLeft < 60000 ? '#FF6B9E' : '#FFFFFF',
-            transition: 'all 0.3s ease', zIndex: 1000,
-            display: 'flex', alignItems: 'center', gap: '8px'
-          }}>
-            ⏱️ {formatTime(timeLeft)}
-          </div>
-        )}
 
         <main className='main-sec'>
           {session.status === 'CLAIM_FORM' && (
@@ -242,20 +186,6 @@ function App() {
                 Take a screenshot of your reward to claim your offer! 🍦
               </p> */}
 
-            </div>
-          )}
-
-          {session.status === 'TIME_EXPIRED' && (
-            <div className="success-state">
-              <div className="success-icon bounce" style={{ filter: 'grayscale(100%)', opacity: 0.8 }}>⏰</div>
-              <h2 style={{ color: '#64748b' }}>TIME'S UP!</h2>
-              <p className="subtitle" style={{ marginBottom: '10px' }}>Your scratch session has ended.</p>
-              
-              <div className="success-reward-card" style={{ background: 'rgba(255,255,255,0.05)', borderColor: '#cbd5e1' }}>
-                <div className="reward-offer" style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
-                  Keep an eye out for our next campaign!
-                </div>
-              </div>
             </div>
           )}
 
