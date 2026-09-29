@@ -121,18 +121,14 @@ const ScratchCard = ({ onReveal, offer }) => {
     ctx.textBaseline = 'middle';
     ctx.font = '800 26px Fredoka, sans-serif';
 
-    const textLines = ['Scratch & Reveal'];
+    const textLines = ['SCRATCH & REVEAL'];
     const startY = height * 0.15;
     
     textLines.forEach((line, index) => {
       const y = startY + (index * 30);
       
-      // Shadow for pop effect
-      ctx.fillStyle = 'rgba(0,0,0, 0.15)';
-      ctx.fillText(line, centerX + 2, y + 2);
-      
-      // Main text color (Primary Blue)
-      ctx.fillStyle = '#165F99'; 
+      // Main text color (Subtle Yellow)
+      ctx.fillStyle = '#E5D81A'; 
       ctx.fillText(line, centerX, y);
     });
   };
@@ -200,8 +196,7 @@ const ScratchCard = ({ onReveal, offer }) => {
   };
 
   return (
-    <div className="scratch-area-box">
-      <div className="scratch-card-container" style={{ marginBottom: 0, zIndex: 2 }}>
+    <div className="scratch-card-container">
       
       <div className="scratch-card-wrapper" ref={containerRef}>
         <div className="prize-container">
@@ -243,7 +238,6 @@ const ScratchCard = ({ onReveal, offer }) => {
           </div>
         )}
       </div>
-    </div>
     </div>
   );
 };
