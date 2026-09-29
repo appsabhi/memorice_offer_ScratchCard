@@ -71,19 +71,27 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
 }
 
 .scratch-card-container {
-  width: 100%; max-width: 320px; aspect-ratio: 1 / 1.35;
+  width: 100%; max-width: 340px; aspect-ratio: 1.6 / 1;
   position: relative; margin: 0 auto 50px;
-  border-radius: 36px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 8px white, inset 0 20px 40px rgba(255,255,255,0.9), inset 0 -10px 20px rgba(0,0,0,0.05);
-  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  background: transparent;
   display: flex; justify-content: center; align-items: center;
   animation: floatCard 6s ease-in-out infinite;
 }
 
 .scratch-card-wrapper {
-  position: relative; width: calc(100% - 16px); height: calc(100% - 16px);
-  border-radius: 28px; overflow: hidden; z-index: 1;
-  background: radial-gradient(circle at top right, #ffffff, #f0f4f8);
+  position: relative; width: 100%; height: 100%;
+  border-radius: 16px; overflow: hidden; z-index: 1;
+  background: white;
+  -webkit-mask-image: radial-gradient(circle at 0 50%, transparent 16px, black 17px), radial-gradient(circle at 100% 50%, transparent 16px, black 17px);
+  -webkit-mask-size: 51% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: left, right;
+  mask-image: radial-gradient(circle at 0 50%, transparent 16px, black 17px), radial-gradient(circle at 100% 50%, transparent 16px, black 17px);
+  mask-size: 51% 100%;
+  mask-repeat: no-repeat;
+  mask-position: left, right;
 }
 
 .prize-container {

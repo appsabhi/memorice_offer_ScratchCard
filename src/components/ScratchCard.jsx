@@ -38,77 +38,46 @@ const ScratchCard = ({ onReveal, offer }) => {
   }, []);
 
   const drawCover = (ctx, width, height) => {
-    // 1. Silver metallic foil base
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, '#e2e8f0');
-    gradient.addColorStop(0.3, '#cbd5e1');
-    gradient.addColorStop(0.5, '#94a3b8');
-    gradient.addColorStop(0.7, '#cbd5e1');
-    gradient.addColorStop(1, '#64748b');
-    ctx.fillStyle = gradient;
+    // 1. Solid base color (Yellow)
+    ctx.fillStyle = '#FFC107'; 
     ctx.fillRect(0, 0, width, height);
+
+    // 2. Darker inner circle
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radius = Math.min(width, height) * 0.38;
     
-    // 2. Diagonal foil pattern (watermark/stripes)
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#E0A800'; 
+    ctx.fill();
+
+    // 3. Draw a flat vector popsicle in the center
     ctx.save();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-    for (let i = -width; i < width * 2; i += 25) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i + height, height);
-      ctx.stroke();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(45 * Math.PI / 180); // Rotate 45 degrees
+
+    // Draw simple popsicle stick
+    ctx.fillStyle = '#E69A59'; // Smooth sandy brown
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(-6, 15, 12, 28, 6);
+    } else {
+      ctx.rect(-6, 15, 12, 28);
     }
+    ctx.fill();
     
-    // Cross diagonal
-    ctx.strokeStyle = 'rgba(0,0,0,0.04)';
-    for (let i = -width; i < width * 2; i += 25) {
-      ctx.beginPath();
-      ctx.moveTo(i, height);
-      ctx.lineTo(i + height, 0);
-      ctx.stroke();
+    // Draw minimal popsicle body (Solid Brand Blue)
+    ctx.fillStyle = '#4CC7EC'; 
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(-22, -35, 44, 60, 22);
+    } else {
+      ctx.rect(-22, -35, 44, 60);
     }
+    ctx.fill();
+
     ctx.restore();
-
-    // 3. Dense noise for foil texture
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    for(let i=0; i<4000; i++) {
-      ctx.fillRect(Math.random() * width, Math.random() * height, 1.2, 1.2);
-    }
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-    for(let i=0; i<4000; i++) {
-      ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
-    }
-
-    // 4. Scratch Area Border (Dashed)
-    ctx.strokeStyle = 'rgba(71, 85, 105, 0.7)';
-    ctx.lineWidth = 3;
-    ctx.setLineDash([8, 8]);
-    ctx.strokeRect(15, 15, width - 30, height - 30);
-    ctx.setLineDash([]); // Reset
-    
-    // 5. Instruction text
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    const drawText = (text, y, fontSize, fontWeight = '800', isAccent = false) => {
-      ctx.font = `${fontWeight} ${fontSize}px Outfit, sans-serif`;
-      
-      // Foil shadow effect
-      ctx.fillStyle = 'rgba(255,255,255, 0.8)';
-      ctx.fillText(text, width / 2 + 1.5, y + 1.5);
-      
-      ctx.fillStyle = 'rgba(0,0,0, 0.5)';
-      ctx.fillText(text, width / 2 - 1, y - 1);
-      
-      // Main color
-      ctx.fillStyle = isAccent ? '#1e293b' : '#334155';
-      ctx.fillText(text, width / 2, y);
-    };
-
-    drawText('✨', height * 0.28, 36);
-    drawText('SCRATCH HERE', height * 0.45, 30, '900', true);
-    drawText('TO REVEAL', height * 0.58, 20, '700');
-    drawText('YOUR SURPRISE', height * 0.70, 20, '700');
   };
 
   const getPosition = (e, canvas) => {
