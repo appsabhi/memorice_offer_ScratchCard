@@ -32,6 +32,16 @@ const ScratchCard = ({ onReveal, offer }) => {
     };
 
     resizeCanvas();
+
+    // Redraw after fonts are loaded to ensure the custom font renders correctly on first visit
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        if (canvasRef.current) {
+          resizeCanvas();
+        }
+      });
+    }
+
     window.addEventListener('resize', resizeCanvas);
     
     return () => window.removeEventListener('resize', resizeCanvas);
@@ -119,7 +129,7 @@ const ScratchCard = ({ onReveal, offer }) => {
     // 4. Draw Text on Scratch Area
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '800 24px Fredoka, sans-serif';
+    ctx.font = '800 24px "Baloo 2", sans-serif';
 
     const textLines = ['SCRATCH &', 'WIN'];
     const startY = height * 0.82; // Move to the bottom section
