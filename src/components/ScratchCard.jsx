@@ -38,8 +38,8 @@ const ScratchCard = ({ onReveal, offer }) => {
   }, []);
 
   const drawCover = (ctx, width, height) => {
-    // 1. Solid base color (Logo Blue)
-    ctx.fillStyle = '#165F99'; // --primary-blue
+    // 1. Solid base color
+    ctx.fillStyle = '#FBED1D'; 
     ctx.fillRect(0, 0, width, height);
 
     // 2. Darker inner circle
@@ -49,7 +49,7 @@ const ScratchCard = ({ onReveal, offer }) => {
     
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.fillStyle = '#0f446f'; // --primary-blue-dark
+    ctx.fillStyle = '#E5D81A'; // Slightly darker yellow for inner circle
     ctx.fill();
 
     // 3. Draw Gift Box (like the reference image)
@@ -180,7 +180,22 @@ const ScratchCard = ({ onReveal, offer }) => {
   };
 
   return (
-    <div className="scratch-card-container">
+    <div className="scratch-section-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+      <h2 style={{ 
+        color: '#ffffff', 
+        fontSize: '1.5rem', 
+        fontWeight: '700', 
+        marginBottom: '25px',
+        textShadow: '0 2px 10px rgba(0,0,0,0.15)',
+        textAlign: 'center',
+        textTransform: 'uppercase',
+        letterSpacing: '1px',
+        fontFamily: 'Fredoka, sans-serif'
+      }}>
+        Scratch to reveal your surprise
+      </h2>
+      
+      <div className="scratch-card-container">
       
       <div className="scratch-card-wrapper" ref={containerRef}>
         <div className="prize-container">
@@ -222,6 +237,7 @@ const ScratchCard = ({ onReveal, offer }) => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
