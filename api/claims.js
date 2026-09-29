@@ -32,8 +32,8 @@ export default async function handler(req, res) {
     try {
       // First explicitly check if it exists (though UNIQUE constraint will also catch it)
       const checkResult = await client.query(
-        'SELECT id FROM public.claims WHERE mobile_number = $1',
-        [trimmedMobile]
+        'SELECT id FROM public.claims WHERE mobile_number = $1 OR bill_number = $2',
+        [trimmedMobile, trimmedBill]
       );
 
       if (checkResult.rows.length > 0) {
