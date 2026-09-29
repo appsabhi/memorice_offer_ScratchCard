@@ -55,7 +55,7 @@ const ScratchCard = ({ onReveal, offer }) => {
     // 3. Draw Gift Box (like the reference image)
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.rotate(-20 * Math.PI / 180); // Tilted left
+    // Gift box is upright
 
     // Apply drop shadow for the box
     ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
@@ -119,16 +119,16 @@ const ScratchCard = ({ onReveal, offer }) => {
     // 4. Draw Text on Scratch Area
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '800 26px Fredoka, sans-serif';
+    ctx.font = '800 24px Fredoka, sans-serif';
 
-    const textLines = ['SCRATCH & REVEAL'];
-    const startY = height * 0.15;
+    const textLines = ['SCRATCH', '&', 'REVEAL'];
+    const startY = height * 0.12;
     
     textLines.forEach((line, index) => {
-      const y = startY + (index * 30);
+      const y = startY + (index * 26);
       
-      // Main text color (Subtle Yellow)
-      ctx.fillStyle = '#E5D81A'; 
+      // Main text color
+      ctx.fillStyle = '#F2BA49'; 
       ctx.fillText(line, centerX, y);
     });
   };
