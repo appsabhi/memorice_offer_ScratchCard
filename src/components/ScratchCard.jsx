@@ -180,22 +180,23 @@ const ScratchCard = ({ onReveal, offer }) => {
   };
 
   return (
-    <div className="scratch-section-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+    <div className="scratch-area-box">
       <h2 style={{ 
         color: '#ffffff', 
-        fontSize: '1.5rem', 
-        fontWeight: '700', 
-        marginBottom: '25px',
-        textShadow: '0 2px 10px rgba(0,0,0,0.15)',
+        fontSize: '1.4rem', 
+        fontWeight: '800', 
+        marginBottom: '30px',
         textAlign: 'center',
         textTransform: 'uppercase',
         letterSpacing: '1px',
-        fontFamily: 'Fredoka, sans-serif'
+        fontFamily: 'Fredoka, sans-serif',
+        position: 'relative',
+        zIndex: 2
       }}>
         Scratch to reveal your surprise
       </h2>
       
-      <div className="scratch-card-container">
+      <div className="scratch-card-container" style={{ marginBottom: 0, zIndex: 2 }}>
       
       <div className="scratch-card-wrapper" ref={containerRef}>
         <div className="prize-container">

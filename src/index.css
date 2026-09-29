@@ -53,6 +53,31 @@ h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; }
   width: 100%;
 }
 
+.scratch-area-box {
+  background: var(--primary-blue);
+  width: 100%;
+  max-width: 420px;
+  padding: 30px 20px 40px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional subtle pattern for the blue box like the screenshot */
+.scratch-area-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(rgba(255,255,255,0.1) 1.5px, transparent 1.5px);
+  background-size: 30px 30px;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .campaign-top-wrapper {
   width: 100%;
   display: flex;
