@@ -115,6 +115,26 @@ const ScratchCard = ({ onReveal, offer }) => {
     ctx.fill();
 
     ctx.restore();
+
+    // 4. Draw Text on Scratch Area
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '800 26px Fredoka, sans-serif';
+
+    const textLines = ['Scratch & Reveal'];
+    const startY = height * 0.15;
+    
+    textLines.forEach((line, index) => {
+      const y = startY + (index * 30);
+      
+      // Shadow for pop effect
+      ctx.fillStyle = 'rgba(0,0,0, 0.15)';
+      ctx.fillText(line, centerX + 2, y + 2);
+      
+      // Main text color (Primary Blue)
+      ctx.fillStyle = '#165F99'; 
+      ctx.fillText(line, centerX, y);
+    });
   };
 
   const getPosition = (e, canvas) => {
@@ -181,21 +201,6 @@ const ScratchCard = ({ onReveal, offer }) => {
 
   return (
     <div className="scratch-area-box">
-      <h2 style={{ 
-        color: '#ffffff', 
-        fontSize: '1.4rem', 
-        fontWeight: '800', 
-        marginBottom: '30px',
-        textAlign: 'center',
-        textTransform: 'uppercase',
-        letterSpacing: '1px',
-        fontFamily: 'Fredoka, sans-serif',
-        position: 'relative',
-        zIndex: 2
-      }}>
-        Scratch to reveal your surprise
-      </h2>
-      
       <div className="scratch-card-container" style={{ marginBottom: 0, zIndex: 2 }}>
       
       <div className="scratch-card-wrapper" ref={containerRef}>
